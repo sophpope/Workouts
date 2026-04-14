@@ -1,10 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlmodel import Session, select, Field, SQLModel, create_engine
 from sqlalchemy import text
 from db_utils import engine 
 from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate
-from typing import Annotated
+from typing import Annotated, List
 from datetime import datetime
 
 # uvicorn main:app --reload
@@ -15,6 +16,19 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 app = FastAPI()
+
+# defining the base url for the app
+origins = [
+    "http://localhost:8081/"
+]
+    
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials = True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
 
 # @app.get("/test-db")
 # def test_db():
