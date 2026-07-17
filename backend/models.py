@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import date, datetime
 from decimal import Decimal
 
-
 class User(SQLModel, table=True):
     __tablename__="users"
     user_id: Optional[int] = Field(default=None, primary_key=True)
@@ -99,7 +98,6 @@ class SetCreate(SQLModel):
     notes: Optional[str]
 
 class WorkoutExerciseCreate(SQLModel):
-    workout_exercise_id: Optional[int]= Field(default=None, primary_key=True)
     workout_id: int = Field(foreign_key="workouts.workout_id")
     exercise_id: int = Field(foreign_key="exercises.exercise_id")
     exercise_order: int
@@ -149,3 +147,23 @@ class WorkoutPublic(SQLModel):
     workout_name: str
     workout_date: date
     notes: str
+
+# creating new models to create a full workout entry
+
+class newWorkout(SQLModel):
+    username: str
+    workout_name: str
+    workout_date: date
+    notes: str
+
+class newWorkoutExercise(SQLModel):
+    exercise_id: int
+    exercise_order: int
+
+class newSetCreate(SQLModel):
+    set_number: int
+    reps: Optional[int]
+    weight:Optional[Decimal]
+    duration_seconds: Optional[int]
+    distance_meters: Optional[Decimal]
+    notes: Optional[str]
