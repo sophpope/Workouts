@@ -19,7 +19,7 @@ app = FastAPI()
 
 # defining the base url for the app
 origins = [
-    "http://localhost:8081/"
+    "http://localhost:8081"
 ]
     
 app.add_middleware(
