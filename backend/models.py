@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field 
 from typing import Optional
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 class User(SQLModel, table=True):
@@ -9,7 +9,7 @@ class User(SQLModel, table=True):
     username: str
     email: str
     password_hash: str
-    created_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
 
 
 class Exercise(SQLModel, table=True):
