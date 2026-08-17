@@ -34,7 +34,7 @@ function AddUserForm({ addUser }) {
 
             setSuccess(`User ${createdUser.username} created successfully`);
         } catch (error){
-            setError(error.response?.data?.detail || 'Error creating user');
+            setError(error.response?.data?.detail?.[0]?.msg || 'Error creating user');
         }
         
     };
