@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import exercises from '../../assets/data/exercises.json';
-import ExerciseListItem from '../../src/components/ExerciseListItem';
+import ExerciseListItem from '../components/ExerciseListItem';
+import UserList from '../components/Users';
 
 export default function App() {
 
   return (
     <View style={styles.container}>
+
+      <UserList />
       <FlatList
         data={exercises}
         contentContainerStyle={{gap:5}}
