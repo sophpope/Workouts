@@ -6,7 +6,7 @@ from decimal import Decimal
 class User(SQLModel, table=True):
     __tablename__="users"
     user_id: Optional[int] = Field(default=None, primary_key=True)
-    username: str
+    username: str = Field(index=True, nullable=False, unique=True)
     email: str
     password_hash: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
