@@ -34,9 +34,23 @@ function AddUserForm({ addUser }) {
 
             setSuccess(`User ${createdUser.username} created successfully`);
         } catch (error){
-            setError(error.response?.data?.detail?.[0]?.msg || 'Error creating user');
-        }
-        
+            const detail = error.response?.data?.detail;
+
+            if (typeof detail === 'string') {
+                setError(detail);
+            } else if (Array.isArray(detail) && detail.length > 0) {
+              const emailError = detail.find((item) => item.loc?.includes('email'));
+
+              if (emailError) {
+                    setError('Please enter a valid email address');
+                } else {
+                    setError('Please check your details and try again');
+                }
+            
+            } else {
+              setError('Error creating user');
+            }
+          }
     };
 
     return (

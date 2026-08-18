@@ -66,6 +66,20 @@ def get_users(session:SessionDep):
 @app.post("/create_new_user", response_model=UserPublic)
 def create_new_user(user: UserCreate):
     with Session(engine) as session:
+
+        # check if the username or email already exists
+
+        existing_username = session.exec(select(User).where(User.username == user.username)).first()
+
+        if existing_username:
+            raise HTTPException(status_code=400, detail="Username already exists")
+        
+        # check if the email already exists
+        existing_email = session.exec(select(User).where(User.email == user.email)).first()
+
+        if existing_email:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
         hashed_password = password_hash.hash(user.password)
 
         db_user = User(

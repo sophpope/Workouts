@@ -15,14 +15,14 @@ function UserList( ){
     };
 
     const addUser = async (username, email, password) =>{
-        const response = api.post('/create_new_user', {
+        const response = await api.post('/create_new_user', {
                 username: username,
                 email: email,
                 password: password
             });
             await fetchUsers();
 
-            return (await response).data;
+            return response.data;
         
     };
     

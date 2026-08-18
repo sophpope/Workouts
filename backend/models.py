@@ -2,12 +2,14 @@ from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import date, datetime, timezone
 from decimal import Decimal
+from pydantic import EmailStr
+
 
 class User(SQLModel, table=True):
     __tablename__="users"
     user_id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, nullable=False, unique=True)
-    email: str
+    email: str = Field(index=True, nullable=False, unique=True)
     password_hash: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
 
@@ -66,7 +68,7 @@ class Workout(SQLModel, table=True):
 
 class UserCreate(SQLModel):
     username: str
-    email: str
+    email: EmailStr
     password: str
 
 
