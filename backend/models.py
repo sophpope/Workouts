@@ -63,6 +63,12 @@ class Workout(SQLModel, table=True):
     workout_date: date
     notes: str
 
+# user login model
+
+class UserLogin(SQLModel):
+    email: EmailStr
+    password: str
+
 # Models for post requests, adding new data to the database                                     
                                  
 

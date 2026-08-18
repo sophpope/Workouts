@@ -4,13 +4,21 @@ from pydantic import BaseModel
 from sqlmodel import Session, select, Field, SQLModel, create_engine
 from sqlalchemy import text
 from db_utils import engine 
-from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate
+from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate, UserLogin
 from typing import Annotated, List
 from datetime import datetime, timezone
 from pwdlib import PasswordHash
 
 # setting up password hash 
 password_hash = PasswordHash.recommended()
+
+# setting up login functions 
+def verify_password(plain_password: str, hashed_password: str):
+    return password_hash.verify(plain_password, hashed_password)
+
+def get_user_by_email(email: str, session: Session):
+    statement = select(User).where(User.email == email)
+    return session.exec(statement).first()
 
 # uvicorn main:app --reload
 def get_session():
@@ -190,26 +198,16 @@ def create_workout(
         
     }
 
-# @app.get("/")
-# def root():
-#     return {"Hello" : "World"}
+# creating login endpoint
 
-# @app.post("/items")
-# def create_item(item: str):
-#     items.append(item)
-#     return items
+@app.post("/login")
+def login(user: UserLogin, session: SessionDep):
+    db_user = get_user_by_email(user.email, session)
 
-# @app.post("/items")
-# def list_items(limit: int=10):
-#     return items[0:limit]
-
-# @app.get("/items")
-# def list_items(limit: int = 10):
-#     return items[0:limit]
-
-# @app.get("/items/{item_id}", response_model=Item)
-# def get_item(item_id: int) -> Item:
-#     if item_id < len(items):
-#         return items[item_id]
-#     else:
-#         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+    
+    if not verify_password(user.password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+    
+    return {"message": "Login successful", "user_id": db_user.user_id, "username": db_user.username}
