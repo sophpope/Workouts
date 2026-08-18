@@ -3,11 +3,16 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import exercises from '../../assets/data/exercises.json';
 import ExerciseListItem from '../components/ExerciseListItem';
 import UserList from '../components/Users';
+import { Link } from 'expo-router';
 
 export default function App() {
 
   return (
     <View style={styles.container}>
+
+      <Link href="/login">
+        Login
+      </Link>
 
       <UserList />
       <FlatList
