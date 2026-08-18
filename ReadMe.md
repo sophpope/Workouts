@@ -44,7 +44,7 @@
 3. Activate the virtual enviroment
 
 4. Install the requirements 
-`pip install "fastapi[standard]" sql model`
+`pip install "fastapi[standard]" sql model "pwdlib[argon2]"`
 
 5. Create a PostgreSQL database for the application 
 

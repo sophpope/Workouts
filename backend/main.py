@@ -6,7 +6,11 @@ from sqlalchemy import text
 from db_utils import engine 
 from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate
 from typing import Annotated, List
-from datetime import datetime
+from datetime import datetime, timezone
+from pwdlib import PasswordHash
+
+# setting up password hash 
+password_hash = PasswordHash.recommended()
 
 # uvicorn main:app --reload
 def get_session():
@@ -62,7 +66,13 @@ def get_users(session:SessionDep):
 @app.post("/create_new_user", response_model=UserPublic)
 def create_new_user(user: UserCreate):
     with Session(engine) as session:
-        db_user = User.model_validate(user)
+        hashed_password = password_hash.hash(user.password)
+
+        db_user = User(
+            username=user.username,
+            email=user.email,
+            password_hash=hashed_password
+        )
         session.add(db_user)
         session.commit()
         session.refresh(db_user)

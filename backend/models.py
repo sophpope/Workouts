@@ -67,7 +67,7 @@ class Workout(SQLModel, table=True):
 class UserCreate(SQLModel):
     username: str
     email: str
-    password_hash: str
+    password: str
 
 
 class ExerciseCreate(SQLModel):

@@ -18,7 +18,7 @@ function UserList( ){
         const response = api.post('/create_new_user', {
                 username: username,
                 email: email,
-                password_hash: password
+                password: password
             });
             await fetchUsers();
 
