@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Pressable} from 'react-native';
 import styles from '../styles/formStyles.js';
 
 const placeholderColour = 'grey';

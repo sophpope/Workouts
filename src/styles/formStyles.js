@@ -56,6 +56,21 @@ const styles = StyleSheet.create({
         color: 'green',
         marginBottom: 10,
       },
+
+      Link: {
+        fontSize: 18,
+        color: '#1E90FF',
+        marginBottom: 10,
+        
+      },
+
+      container: {
+        flex: 1,
+        backgroundColor: '#BFDCD8',
+        justifyContent: 'center',
+        padding:10,
+
+      }
     
     })
 

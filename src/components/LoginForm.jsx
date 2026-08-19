@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import api from '../api.js';
 import styles from '../styles/formStyles.js';
+import {Link} from 'expo-router';
 
 
 function LoginForm(){
@@ -57,6 +58,10 @@ function LoginForm(){
                 onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </Pressable>
+
+            <Link href="/register" style={styles.linkText}>
+                Create account
+            </Link>
         </View>
     );
 
