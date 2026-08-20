@@ -24,7 +24,7 @@ class Exercise(SQLModel, table=True):
     category: str
     equipment: str
     description: str
-    created_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
 
 class PersonalRecords(SQLModel, table=True):
     __tablename__="personal_records"
