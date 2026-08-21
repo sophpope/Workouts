@@ -41,3 +41,75 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# ----------------------
+# PYTHON
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.env.*
+.venv/
+
+# Python build files
+build/
+dist/
+*.egg-info/
+
+# Python logs
+*.log
+
+
+# JAVASCRIPT / NODE
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build folders
+dist/
+build/
+
+# ----------------------
+# ENV / SECRETS
+# ----------------------
+.env
+.env.local
+.env.*.local
+
+# ----------------------
+# OS FILES
+# ----------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------
+# IDE / EDITOR
+# ----------------------
+.vscode/
+.idea/
+
+# ----------------------
+# DATABASE (optional)
+# ----------------------
+*.sqlite3
+*.db
+
+# ----------------------
+# TEST / CACHE
+# ----------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ----------------------
+# MISC
+# ----------------------
+*.swp
+
+.config.py
