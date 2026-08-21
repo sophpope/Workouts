@@ -112,4 +112,4 @@ htmlcov/
 # ----------------------
 *.swp
 
-.config.py
+config.py
