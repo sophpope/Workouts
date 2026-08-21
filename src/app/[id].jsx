@@ -1,15 +1,32 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useLocalSearchParams} from 'expo-router';
-import exercises from '../../assets/data/exercises.json'
+//import exercises from '../../assets/data/exercises.json'
+import api from '../api';
+import { useEffect } from 'react';
 import {Stack} from 'expo-router'
 import { useState } from 'react'
+import styles from '../styles/formStyles';
 
 export default function ExerciseDetailsScreen() {
     const params = useLocalSearchParams();
 
     const [isInstructionExpanded, setIsInstructionExpanded] = useState(false);
 
-    const exercise = exercises.find((item) => item.name == params.name);
+    const [exercise, setExercise] = useState(null);
+
+    useEffect(() => {
+        const fetchExercise = async () => {
+            try {
+                const response = await api.get(`/exercises/${params.id}`);
+                setExercise(response.data);
+            } catch (error) {
+                console.error("Error fetching exercise", error);
+            }
+        };
+
+        fetchExercise();
+    }, [params.id]);
+
 
     if (!exercise) {
         return 
@@ -17,62 +34,33 @@ export default function ExerciseDetailsScreen() {
                 Exercise not found
             </Text>;
     }
-    //console.log()
 
     return(
-        <ScrollView contentContainerStyle={styles.container}>
-            <Stack.Screen options={{title: exercise.name}} />
+        <ScrollView contentContainerStyle={styles.exerciseContainer}>
+            <Stack.Screen options={{title: exercise.exercise_name}} />
 
             <View style={styles.panel}>
-                <Text style={styles.exerciseName}>{exercise.name}</Text>
+                <Text style={styles.exerciseName}>{exercise.exercise_name}</Text>
 
                 <Text style={styles.exerciseSubtitle}>
-                    <Text style={styles.subValue}>{exercise.muscle}</Text> |{' '}
+                    <Text style={styles.subValue}>{exercise.primary_muscle}</Text> |{' '}
                     <Text style={styles.subValue}>{exercise.equipment}</Text>
                 </Text>
             </View>
 
             <View style={styles.panel}>
-                <Text style={styles.instructions} numberOfLines={isInstructionExpanded ? 0:3}>{exercise.instructions}</Text>
-                <Text 
+                <Text style={styles.instructions} numberOfLines={isInstructionExpanded ? 0:3}>{exercise.description}</Text>
+                <Text style={styles.instructions}>Difficulty: {exercise.difficulty}</Text>
+                <Text style={styles.instructions}>Category: {exercise.category}</Text>
+                <Text style={styles.instructions}>Equipment: {exercise.equipment}</Text>
+                <Text style={styles.instructions}>Primary Muscle: {exercise.primary_muscle}</Text>  
+                <Text style={styles.instructions}>Secondary Muscle: {exercise.secondary_muscle}</Text>
+                {/* <Text 
                 onPress={() => setIsInstructionExpanded(!isInstructionExpanded)} 
                 style={styles.seeMore}>
                     {isInstructionExpanded ? 'See Less' : 'See More ...'}
-                    </Text>
+                    </Text> */}
             </View>
         </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        padding:10,
-        gap: 10,
-    },
-    panel: {
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 10,
-    },
-    exerciseName: {
-        fontSize:24, 
-        fontWeight: '500',
-    },
-    exerciseSubtitle: {
-        color: 'dimgray'
-    },
-    subValue:{
-        textTransform: 'capitalize'
-    },
-    instructions:{
-        fontSize: 16,
-        lineHeight: 25,
-    },
-    seeMore:{
-        alignSelf: 'center',
-        padding: 5,
-        fontWeight: '600',
-        color: 'gray',
-    }
-}
-)

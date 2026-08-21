@@ -7,71 +7,110 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         marginBottom: 20,
     
-      },
+    },
     
-      title: {
+    title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
-      },
-    
-      subtitle: {
+    },
+
+    subtitle: {
         fontSize: 16,
         marginBottom: 20,
-      },
-    
-      label: {
+    },
+
+    label: {
         fontSize: 14,
         marginBottom: 5,
-      },
-    
-      input: {
+    },
+
+    input: {
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 8,
         padding: 10,
         marginBottom: 15,
         color: 'black',
-      },
-    
-      button: {
+    },
+
+    button: {
         backgroundColor: '#4CAF50',
         padding: 10,
         borderRadius: 8,
         alignItems: 'center',
-      },
-    
-      buttonText: {
+    },
+
+    buttonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
-      },  
-      
-      error: {
+    },  
+    
+    error: {
         color: 'red',
         marginBottom: 10,
-      },
-    
-      success: {
+    },
+
+    success: {
         color: 'green',
         marginBottom: 10,
-      },
+    },
 
-      Link: {
+    Link: {
         fontSize: 18,
         color: '#1E90FF',
         marginBottom: 10,
-        
-      },
 
-      container: {
+    },
+
+    buttonLink:{
+        backgroundColor: '#1E90FF',
+        padding: 10,
+        borderRadius: 8,
+        alignItems: 'center',
+        margin: 10,
+    },
+
+    container: {
         flex: 1,
         backgroundColor: '#BFDCD8',
         justifyContent: 'center',
         padding:10,
 
-      }
-    
-    })
+    },
 
+    exerciseContainer: {
+        padding:10,
+        gap: 10,
+    },
+        
+    panel: {
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 10,
+    },
+    exerciseName: {
+        fontSize:24, 
+        fontWeight: '500',
+    },
+    exerciseSubtitle: {
+        color: 'dimgray'
+    },
+    subValue:{
+        textTransform: 'capitalize'
+    },
+    instructions:{
+        fontSize: 16,
+        lineHeight: 25,
+    },
+    seeMore:{
+        alignSelf: 'center',
+        padding: 5,
+        fontWeight: '600',
+        color: 'gray',
+    }, 
+
+});
     export default styles;
+   
