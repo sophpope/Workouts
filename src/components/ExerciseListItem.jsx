@@ -4,7 +4,7 @@ import {Link} from 'expo-router';
 
 export default function ExerciseListItem({ item }) {
     return(
-        <Link href={`/${item.name}`} asChild>
+        <Link href={`/${item.exercise_id}`} asChild>
             <Pressable style={styles.exerciseContainer}>
                 <Text style={styles.exerciseName}>{item.exercise_name}</Text>
                 <Text style={styles.exerciseSubtitle}>

@@ -110,6 +110,17 @@ def get_specifc_exercise(session:SessionDep):
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Exercise {exercise} not found")
 
+# exercise by id
+@app.get("/exercises/{exercise_id}")
+def get_exercise_by_id(exercise_id: int, session: SessionDep):
+    try:
+        exercise = session.exec(select(Exercise).where(Exercise.exercise_id == exercise_id)).first()
+        if not exercise:
+            raise HTTPException(status_code=404, detail=f"Exercise with ID {exercise_id} not found")
+        return exercise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Code Error: {str(e)}")
+    
 @app.get("/exercises")
 def get_exercises(session:SessionDep):
     try:
