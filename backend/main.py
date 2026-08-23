@@ -6,15 +6,9 @@ from sqlalchemy import text
 from db_utils import engine 
 from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate, UserLogin
 from typing import Annotated, List
-from datetime import datetime, timezone
-from pwdlib import PasswordHash
+from datetime import datetime, timezone, timedelta
+from auth import password_hash, verify_password, create_access_token
 
-# setting up password hash 
-password_hash = PasswordHash.recommended()
-
-# setting up login functions 
-def verify_password(plain_password: str, hashed_password: str):
-    return password_hash.verify(plain_password, hashed_password)
 
 def get_user_by_email(email: str, session: Session):
     statement = select(User).where(User.email == email)
@@ -221,4 +215,6 @@ def login(user: UserLogin, session: SessionDep):
     if not verify_password(user.password, db_user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid email or password")
     
-    return {"message": "Login successful", "user_id": db_user.user_id, "username": db_user.username}
+    access_token = create_access_token(db_user.user_id)
+    
+    return {"message": "Login successful", "user_id": db_user.user_id, "username": db_user.username, "access_token": access_token, "token_type": "bearer"}
