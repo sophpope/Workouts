@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable } from 'react-native';
 import api from '../api.js';
 import styles from '../styles/formStyles.js';
 import { Link, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function LoginForm(){
@@ -25,8 +26,14 @@ function LoginForm(){
 
             setSuccess(`Welcome ${response.data.username}! You have successfully logged in.`);
 
+            const token = response.data.access_token;
+
+            await AsyncStorage.setItem('access_token', token);
+
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
             router.replace('/profile');
-            
+
         } catch (error) {
             setError(error.response?.data?.detail || 'Error logging in. Please check your details and try again.');
         }
