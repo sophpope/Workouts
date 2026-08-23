@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import api from '../api.js';
 import styles from '../styles/formStyles.js';
-import {Link} from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 
 function LoginForm(){
@@ -10,6 +10,8 @@ function LoginForm(){
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    const router = useRouter();
 
     const handleLogin = async () => {
         setError('');
@@ -22,6 +24,9 @@ function LoginForm(){
             });
 
             setSuccess(`Welcome ${response.data.username}! You have successfully logged in.`);
+
+            router.replace('/profile');
+            
         } catch (error) {
             setError(error.response?.data?.detail || 'Error logging in. Please check your details and try again.');
         }
