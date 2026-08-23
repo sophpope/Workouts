@@ -7,7 +7,8 @@ from db_utils import engine
 from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate, UserLogin
 from typing import Annotated, List
 from datetime import datetime, timezone, timedelta
-from auth import password_hash, verify_password, create_access_token
+from auth import password_hash, verify_password, create_access_token, decode_access_token
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 
 def get_user_by_email(email: str, session: Session):
@@ -22,6 +23,9 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 app = FastAPI()
+
+# authentication setup
+oauth2_scheme =  OAuth2PasswordBearer(tokenUrl="token")
 
 # defining the base url for the app
 origins = [
@@ -218,3 +222,38 @@ def login(user: UserLogin, session: SessionDep):
     access_token = create_access_token(db_user.user_id)
     
     return {"message": "Login successful", "user_id": db_user.user_id, "username": db_user.username, "access_token": access_token, "token_type": "bearer"}
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep):
+    user_id = decode_access_token(token)
+
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    user = session.get(User, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return user
+
+# Endpoint to get the current logged-in user's information
+
+@app.get("/me", response_model=UserPublic)
+def get_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user
+
+# endpoint for OAuth2 authentication
+@app.post("/token")
+def login_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
+    db_user = get_user_by_email(form_data.username, session)
+
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+    
+    if not verify_password(form_data.password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+    
+    access_token = create_access_token(db_user.user_id)
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
