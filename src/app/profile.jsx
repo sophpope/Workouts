@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';  
+import { View, Text, Pressable } from 'react-native';  
 import api from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';   
+import { useRouter } from 'expo-router';
 
 export default function Profile() {
     const [user, setUser] = useState(null);
@@ -22,6 +23,22 @@ export default function Profile() {
         }
     };
 
+    /* setting up logout */
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.removeItem('access_token');
+
+            delete api.defaults.headers.common['Authorization'];
+
+            router.replace('/login');
+
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
     useEffect(() => {
         fetchUserProfile();
     }, []);
@@ -31,6 +48,10 @@ export default function Profile() {
         <Text>Profile</Text>
 
         {user && (<Text>Welcome back {user.username}</Text>)}
+
+        <Pressable onPress={handleLogout}>
+            <Text>Logout</Text>
+        </Pressable>
         </View>
     );
     }
