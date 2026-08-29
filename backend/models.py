@@ -111,7 +111,6 @@ class WorkoutExerciseCreate(SQLModel):
     exercise_order: int
 
 class WorkoutCreate(SQLModel):
-    user_id: int = Field(foreign_key="users.user_id")
     workout_name: str
     workout_date: date
     notes: str
