@@ -8,6 +8,8 @@ from routes.users import router as users_router
 
 from routes.exercises import router as exercises_router
 
+from routes.workouts import router as workouts_router
+
 # uvicorn main:app --reload (backend)
 # npx expo start (frontend)
 
@@ -15,6 +17,7 @@ app = FastAPI()
 
 app.include_router(users_router)
 app.include_router(exercises_router)
+app.include_router(workouts_router)
 
 
 

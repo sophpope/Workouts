@@ -22,14 +22,12 @@ def create_workout(
     session.refresh(db_workout)
     return db_workout
 
-# Viewing workouts
+# Viewing workouts for logged in user
 @router.get("/get_workout")
-def get_workouts(session:SessionDep):
-    try:
-        exercises = session.exec(select(Exercise)).all()
-        return exercises
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+def get_workouts(session:SessionDep, current_user: Annotated[User, Depends(get_current_user)]):
+    workouts = session.exec(select(Workout).where(Workout.user_id == current_user.user_id)).all()
+    return workouts
+    
 
 
 # Route to add a whole new workout, with the exercise and set
