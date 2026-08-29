@@ -3,6 +3,15 @@ from datetime import datetime, timedelta, timezone
 #from config import SECRET_KEY, ALGORITHM
 from not_for_git_hub import SECRET_KEY, ALGORITHM
 from pwdlib import PasswordHash
+from typing import Annotated
+from fastapi import FastAPI, HTTPException, Query, Depends
+from models import User
+from db_utils import SessionDep
+from fastapi.security import OAuth2PasswordBearer
+
+
+# authentication setup
+oauth2_scheme =  OAuth2PasswordBearer(tokenUrl="token")
 
 # setting up password hash 
 password_hash = PasswordHash.recommended()
@@ -32,3 +41,17 @@ def decode_access_token(token: str):
         raise Exception("Token has expired")
     except jwt.InvalidTokenError:
         raise Exception("Invalid token")
+    
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep):
+    user_id = decode_access_token(token)
+
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    user = session.get(User, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return user

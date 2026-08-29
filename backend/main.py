@@ -7,25 +7,18 @@ from db_utils import engine
 from models import User, Exercise, WorkoutExercise, Set, PersonalRecords, Workout, UserCreate, ExerciseCreate, WorkoutExerciseCreate, SetCreate, PersonalRecordsCreate, WorkoutCreate, UserPublic, ExercisePublic, WorkoutExercisePublic, SetPublic, PersonalRecordsPublic, WorkoutPublic, newWorkout, newWorkoutExercise, newSetCreate, UserLogin
 from typing import Annotated, List
 from datetime import datetime, timezone, timedelta
-from auth import password_hash, verify_password, create_access_token, decode_access_token
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from auth import get_current_user
+from db_utils import SessionDep
 
+# importing user routes
+from routes.users import router as users_router
 
-def get_user_by_email(email: str, session: Session):
-    statement = select(User).where(User.email == email)
-    return session.exec(statement).first()
-
-# uvicorn main:app --reload
-def get_session():
-    with Session(engine) as session:
-        yield session
-
-SessionDep = Annotated[Session, Depends(get_session)]
+# uvicorn main:app --reload (backend)
+# npx expo start (frontend)
 
 app = FastAPI()
 
-# authentication setup
-oauth2_scheme =  OAuth2PasswordBearer(tokenUrl="token")
+app.include_router(users_router)
 
 # defining the base url for the app
 origins = [
@@ -59,44 +52,7 @@ def test_db(session: SessionDep):
         return {"status": "error", "message": str(e)}
 
 
-# showing all user information   
-@app.get("/users")
-def get_users(session:SessionDep):
-    try:
-        users = session.exec(select(User)).all()
-        return users
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-    
-#creating a new user
-@app.post("/create_new_user", response_model=UserPublic)
-def create_new_user(user: UserCreate):
-    with Session(engine) as session:
 
-        # check if the username or email already exists
-
-        existing_username = session.exec(select(User).where(User.username == user.username)).first()
-
-        if existing_username:
-            raise HTTPException(status_code=400, detail="Username already exists")
-        
-        # check if the email already exists
-        existing_email = session.exec(select(User).where(User.email == user.email)).first()
-
-        if existing_email:
-            raise HTTPException(status_code=400, detail="Email already registered")
-        
-        hashed_password = password_hash.hash(user.password)
-
-        db_user = User(
-            username=user.username,
-            email=user.email,
-            password_hash=hashed_password
-        )
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
-        return db_user
 
 # Returning specific exercise info for crow pose
 @app.get("/exercises_specific")
@@ -152,8 +108,13 @@ def create_exercise(exercise: ExerciseCreate):
     
 # Create a new workout 
 @app.post("/create_workout", response_model=WorkoutPublic)
-def create_workout(workout: WorkoutCreate, session:SessionDep):
-    db_workout = Workout.model_validate(workout)
+def create_workout(
+    workout: WorkoutCreate,
+    session:SessionDep,
+    current_user: Annotated[User, Depends(get_current_user)]):
+
+    db_workout = Workout.model_validate(workout, update={"user_id": current_user.user_id})
+
     session.add(db_workout)
     session.commit()
     session.refresh(db_workout)
@@ -207,53 +168,5 @@ def create_workout(
         
     }
 
-# creating login endpoint
 
-@app.post("/login")
-def login(user: UserLogin, session: SessionDep):
-    db_user = get_user_by_email(user.email, session)
-
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-    
-    if not verify_password(user.password, db_user.password_hash):
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-    
-    access_token = create_access_token(db_user.user_id)
-    
-    return {"message": "Login successful", "user_id": db_user.user_id, "username": db_user.username, "access_token": access_token, "token_type": "bearer"}
-
-def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep):
-    user_id = decode_access_token(token)
-
-    if user_id is None:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-    
-    user = session.get(User, user_id)
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    return user
-
-# Endpoint to get the current logged-in user's information
-
-@app.get("/me", response_model=UserPublic)
-def get_me(current_user: Annotated[User, Depends(get_current_user)]):
-    return current_user
-
-# endpoint for OAuth2 authentication
-@app.post("/token")
-def login_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
-    db_user = get_user_by_email(form_data.username, session)
-
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-    
-    if not verify_password(form_data.password, db_user.password_hash):
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-    
-    access_token = create_access_token(db_user.user_id)
-    
-    return {"access_token": access_token, "token_type": "bearer"}
 
