@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';  
+import { View, Text, Pressable} from 'react-native';  
 import api from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';   
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import WorkoutList from '../components/WorkoutList';
 import styles from '../styles/formStyles';
 
@@ -56,10 +56,8 @@ export default function Profile() {
 
         {user && (<Text style={styles.profile}>Welcome back {user.username}</Text>)}
 
-        <Link href="/create-workout" asChild>
-            <Pressable>
-                <Text style={styles.buttonLink}>Create New Workout</Text>
-            </Pressable>
+        <Link href="/create-workout" style={styles.workoutButton} >
+            Create New Workout
         </Link>
 
         <WorkoutList workouts={workouts} />

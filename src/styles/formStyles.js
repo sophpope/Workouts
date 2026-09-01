@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        padding: 10, 
     },
 
     subtitle: {
@@ -30,8 +30,11 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 8,
         padding: 10,
-        marginBottom: 15,
+        marginBottom: 10,
         color: 'black',
+        marginTop: 10, 
+        marginLeft: 10,
+        marginRight: 10,
     },
 
     button: {
@@ -138,6 +141,16 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginLeft: 10,
     },
+
+    workoutButton:{
+        backgroundColor: '#90E6FC',
+        padding: 10,
+        borderRadius: 8,
+        alignItems: 'center',
+        margin: 10,
+        color: 'white',
+        textAlign: 'center',
+    }
 
 
 });
