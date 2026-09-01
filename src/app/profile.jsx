@@ -3,9 +3,12 @@ import { View, Text, Pressable } from 'react-native';
 import api from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';   
 import { useRouter } from 'expo-router';
+import WorkoutList from '../components/WorkoutList';
+import styles from '../styles/formStyles';
 
 export default function Profile() {
     const [user, setUser] = useState(null);
+    const [workouts, setWorkouts] = useState([]);
 
     const fetchUserProfile = async () => {
         try {
@@ -18,10 +21,15 @@ export default function Profile() {
             const response = await api.get('/me');
             setUser(response.data);
 
+            const workoutResponse = await api.get('/get_workout');
+            setWorkouts(workoutResponse.data);
+
         } catch (error) {
             console.error('Error fetching user profile:', error);
         }
     };
+
+    
 
     /* setting up logout */
     const router = useRouter();
@@ -45,11 +53,12 @@ export default function Profile() {
 
     return (
         <View>
-        <Text>Profile</Text>
 
-        {user && (<Text>Welcome back {user.username}</Text>)}
+        {user && (<Text style={styles.profile}>Welcome back {user.username}</Text>)}
 
-        <Pressable onPress={handleLogout}>
+        <WorkoutList workouts={workouts} />
+
+        <Pressable style={styles.buttonLink} onPress={handleLogout}>
             <Text>Logout</Text>
         </Pressable>
         </View>

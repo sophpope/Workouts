@@ -111,6 +111,35 @@ const styles = StyleSheet.create({
         color: 'gray',
     }, 
 
+    workoutName:{
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+
+    workoutText:{
+        fontSize: 14,
+        color: 'dimgray',
+    },
+
+    workoutContainer:{
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 10,
+        gap: 5,
+        marginHorizontal: 2,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+
+    profile:{
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginTop: 10,
+        marginLeft: 10,
+    },
+
+
 });
     export default styles;
    
