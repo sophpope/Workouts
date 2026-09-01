@@ -56,6 +56,12 @@ export default function Profile() {
 
         {user && (<Text style={styles.profile}>Welcome back {user.username}</Text>)}
 
+        <Link href="/create-workout" asChild>
+            <Pressable>
+                <Text style={styles.buttonLink}>Create New Workout</Text>
+            </Pressable>
+        </Link>
+
         <WorkoutList workouts={workouts} />
 
         <Pressable style={styles.buttonLink} onPress={handleLogout}>
