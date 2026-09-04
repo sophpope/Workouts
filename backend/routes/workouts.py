@@ -5,6 +5,7 @@ from sqlmodel import select
 from models import Workout, WorkoutCreate, WorkoutPublic, WorkoutExercise, WorkoutExerciseCreate, Exercise, ExerciseCreate, User, Set, SetCreate
 from db_utils import SessionDep
 from auth import get_current_user
+from sqlalchemy import func
 
 router = APIRouter()
 
@@ -82,7 +83,11 @@ def add_workout_exercise(
     if workout.user_id != current_user.user_id:
         raise HTTPException(status_code=403, detail="Not authorized to add exercises to this workout")
     
-    new_workout_exercise = WorkoutExercise.model_validate(workout_exercise)
+    last_order = session.exec(
+        select(func.max(WorkoutExercise.exercise_order)).where(WorkoutExercise.workout_id == workout_exercise.workout_id)).one()
+        
+    next_order = (last_order or 0) + 1
+    new_workout_exercise = WorkoutExercise(workout_id=workout_exercise.workout_id, exercise_id=workout_exercise.exercise_id, exercise_order=next_order)
     
     session.add(new_workout_exercise)
     session.commit()

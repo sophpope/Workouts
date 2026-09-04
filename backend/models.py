@@ -108,7 +108,6 @@ class SetCreate(SQLModel):
 class WorkoutExerciseCreate(SQLModel):
     workout_id: int = Field(foreign_key="workouts.workout_id")
     exercise_id: int = Field(foreign_key="exercises.exercise_id")
-    exercise_order: int
 
 class WorkoutCreate(SQLModel):
     workout_name: str
