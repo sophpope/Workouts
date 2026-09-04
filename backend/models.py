@@ -99,10 +99,10 @@ class PersonalRecordsCreate(SQLModel):
 class SetCreate(SQLModel):
     workout_exercise_id: int = Field(foreign_key="workout_exercises.workout_exercise_id")
     set_number: int
-    reps: Optional[int]
-    weight:Optional[Decimal]
-    duration_seconds: Optional[int]
-    distance_meters: Optional[Decimal]
+    reps: Optional[int] = None
+    weight:Optional[Decimal] = None
+    duration_seconds: Optional[int] = None
+    distance_meters: Optional[Decimal] = None
     notes: Optional[str]
 
 class WorkoutExerciseCreate(SQLModel):

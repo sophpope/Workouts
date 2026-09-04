@@ -1,8 +1,8 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 
-from models import Workout, WorkoutCreate, WorkoutPublic, User, Exercise, WorkoutExercise, Set, newWorkoutExercise, newSetCreate
+from models import Workout, WorkoutCreate, WorkoutPublic, WorkoutExercise, WorkoutExerciseCreate, Exercise, ExerciseCreate, User, Set, SetCreate
 from db_utils import SessionDep
 from auth import get_current_user
 
@@ -34,8 +34,8 @@ def get_workouts(session:SessionDep, current_user: Annotated[User, Depends(get_c
 @router.post("/new_workout")
 def create_workout(
     workout: WorkoutCreate,
-    workout_exercise: newWorkoutExercise,
-    sets: newSetCreate,
+    workout_exercise: WorkoutExercise,
+    sets: SetCreate,
     session: SessionDep
 ):
     new_workout = Workout.model_validate(workout)
@@ -67,3 +67,24 @@ def create_workout(
         "set": new_set
         
     }
+
+@router.post("/add_workout_exercise")
+def add_workout_exercise(
+    workout_exercise: WorkoutExerciseCreate,
+    session: SessionDep,
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    workout = session.get(Workout, workout_exercise.workout_id)
+    
+    if not workout:
+        raise HTTPException(status_code=404, detail="Workout not found")
+    
+    if workout.user_id != current_user.user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to add exercises to this workout")
+    
+    new_workout_exercise = WorkoutExercise.model_validate(workout_exercise)
+    
+    session.add(new_workout_exercise)
+    session.commit()
+    session.refresh(new_workout_exercise)
+    return new_workout_exercise
