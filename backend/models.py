@@ -62,6 +62,7 @@ class Workout(SQLModel, table=True):
     workout_name: str
     workout_date: date
     notes: str
+    is_complete: bool = Field(default=False)
 
 # user login model
 
@@ -150,9 +151,11 @@ class WorkoutExercisePublic(SQLModel):
     exercise_order: int    
 
 class WorkoutPublic(SQLModel):
+    workout_id: int
     workout_name: str
     workout_date: date
     notes: str
+    is_complete: bool
 
 # creating new models to create a full workout entry
 
