@@ -132,6 +132,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 2,
         marginLeft: 10,
         marginRight: 10,
+        marginBottom: 5,
+        marginTop: 5,
     },
 
     profile:{

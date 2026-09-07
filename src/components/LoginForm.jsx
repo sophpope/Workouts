@@ -50,6 +50,7 @@ function LoginForm(){
                 value={email}
                 onChangeText={setEmail}
                 placeholder='Email'
+                placeholderTextColor='grey'
                 autoCapitalize='none'
                 keyboardType='email-address'
             />
@@ -59,6 +60,7 @@ function LoginForm(){
                 value={password}
                 onChangeText={setPassword}
                 placeholder='Password'
+                placeholderTextColor='grey'
                 secureTextEntry
             />
 
